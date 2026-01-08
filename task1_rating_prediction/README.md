@@ -290,11 +290,11 @@ consistency_rate = (# identical across all runs) / total_prompts
 
 ### Comparison Table
 
-| Strategy | Exact Accuracy | Within ±1 | JSON Validity | Consistency |
+| Strategy | Exact Accuracy | Within ±1 | JSON Validity Rate | Consistency Rate |
 |----------|----------------|-----------|---------------|-------------|
-| Zero-Shot | X% | Y% | Z% | W% |
-| Few-Shot | X% | Y% | Z% | W% |
-| Chain-of-Thought | X% | Y% | Z% | W% |
+| Zero-Shot | 64.50% | 98% | 100% | 100% |
+| Few-Shot | 63.50% | 97.50% | 100% | 100% |
+| Chain-of-Thought | 64.50% | 98% | 100% | 100% |
 
 
 ## 💬 Discussion: Results & Trade-offs
