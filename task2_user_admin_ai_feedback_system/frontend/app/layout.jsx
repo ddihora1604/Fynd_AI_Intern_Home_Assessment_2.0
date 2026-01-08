@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Task 2 - AI Feedback System",
+  title: "AI Feedback System",
   description: "Two-dashboard AI feedback system"
 };
 
