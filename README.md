@@ -26,6 +26,7 @@ This repository contains solutions for two AI/LLM-focused tasks:
 | 📁 **Task 1 - Full Directory** | [task1_rating_prediction/](task1_rating_prediction/) |
 | 📁 **Task 2 - Full Directory** | [task2_user_admin_ai_feedback_system/](task2_user_admin_ai_feedback_system/) |
 
+Report link: https://drive.google.com/file/d/1UBog-dimbkXo4w8vVCI1G3OTYnhEFc42/view?usp=sharing
 ---
 
 ## 🎯 Overall Approach
