@@ -216,58 +216,84 @@ User: Rating: {rating}/5
 
 ## ⚙️ System Behaviour, Trade-offs & Limitations (Task 2)
 
-### System Behaviour
+### How the System Actually Works
 
-**Application Workflow**:
+**Submit Flow (`POST /api/submit-review`)**:
 ```
-1. User submits rating + review
-2. Backend validates input (Pydantic)
-3. Record inserted with status="pending"
-4. LLM called async with truncated review
-5. Database updated with AI response
-6. User sees personalized acknowledgment
-7. Admin sees summary + actions in table
+User clicks Submit
+       ↓
+Pydantic validates: rating (1-5), review (≤8000 chars)
+       ↓
+Insert row into Supabase with ai_status="pending"
+       ↓
+Call run_llm_and_build_update() ← wrapped in try/except
+       ↓
+   ┌───────────────────────────────────────┐
+   │  If LLM succeeds:                     │
+   │  - Parse JSON response                │
+   │  - Extract: user_response, summary,   │
+   │             recommended_actions       │
+   │  - Update row: ai_status="success"    │
+   └───────────────────────────────────────┘
+   ┌───────────────────────────────────────┐
+   │  If LLM fails (timeout, API error,    │
+   │  malformed JSON):                     │
+   │  - Use fallback response              │
+   │  - Update row: ai_status="failed"     │
+   │  - Admin can retry later              │
+   └───────────────────────────────────────┘
+       ↓
+Return {submission_id, status: "accepted", ai_response}
 ```
 
-**Error Handling Behaviour**:
-| Scenario | System Response |
-|----------|-----------------|
-| Empty review | Default response: "Thanks for rating. Add details for faster action." |
-| Long review (>2500 chars) | Truncated with `[TRUNCATED]` marker |
-| LLM timeout (30s) | Fallback: "Thanks for feedback. Team will review shortly." |
-| LLM API error | Status set to "failed", retry button appears |
-| Database error | Returns 502 with structured error JSON |
+### What I Actually Implemented for Edge Cases
+
+| Edge Case | How It's Handled in Code | Code Location |
+|-----------|--------------------------|---------------|
+| **Empty review text** | Returns pre-defined response: *"Thanks for your rating. If you add a short note, we can act on it faster."* + generic summary/actions | `llm/client.py` line 28-33 |
+| **Long review (>2500 chars)** | `_truncate()` function cuts text and appends `[TRUNCATED]` marker before sending to LLM | `llm/client.py` line 19-22 |
+| **LLM returns non-JSON** | `json.loads()` wrapped in try/except → raises `RuntimeError` → caught by service layer → returns fallback | `llm/client.py` line 79-80 |
+| **LLM missing required fields** | Explicit check for `user_response`, `summary`, `recommended_actions` → raises error if missing | `llm/client.py` line 86-87 |
+| **Cerebras API timeout** | `httpx.AsyncClient(timeout=30.0)` → timeout exception → fallback response | `llm/client.py` line 56 |
+| **Supabase insert fails** | Returns `502` with structured `ErrorResponse(code="SUPABASE_ERROR")` | `routes/feedback.py` line 31-34 |
+| **Supabase update fails** | Silently uses fallback response but still returns success to user (row exists with pending status) | `routes/feedback.py` line 48-50 |
 
 ### Trade-offs
 
-| Trade-off | Choice Made | Alternative Considered |
-|-----------|-------------|------------------------|
-| **Sync vs Async LLM** | Sync (blocking) | Async with webhooks |
-| *Rationale* | Simpler UX—user sees response immediately | Would require polling/websockets |
-| **Truncation limit** | 2500 chars | Full review (no limit) |
-| *Rationale* | Prevents context overflow, consistent latency | Could miss details in very long reviews |
-| **Temperature** | 0.2 | 0.0 (deterministic) |
-| *Rationale* | Slight variation feels more natural | May occasionally produce odd responses |
-| **Retry mechanism** | Manual button | Auto-retry with backoff |
-| *Rationale* | Gives admin control, avoids infinite loops | Better for fully automated systems |
+| Decision | What I Did | Why | What I Sacrificed |
+|----------|------------|-----|-------------------|
+| **Blocking LLM call** | User waits for LLM response before seeing result | Simpler UX—immediate feedback, no polling needed | Slower perceived response (~2-4s wait) |
+| **Insert-then-update pattern** | First insert row as "pending", then update with LLM result | Ensures data is saved even if LLM fails; allows retry | Extra database call per submission |
+| **Hard truncation at 2500 chars** | Just cut the text with `[TRUNCATED]` marker | Prevents token overflow, keeps latency consistent | May lose important context in very long reviews |
+| **No retry queue** | Admin manually clicks "Retry" button for failed submissions | Simple implementation, no background job infrastructure | Failed submissions sit until admin notices |
+| **Temperature 0.2** | Slight randomness in LLM responses | Responses feel more natural, less robotic | Occasional inconsistency in tone |
 
-### Limitations
+### Limitations of This Implementation
 
-1. **Cold Start Latency**
-   - Render free tier spins down after inactivity
-   - First request may take 10-30s to wake up
+1. **Render Cold Starts**
+   - I deployed backend on Render free tier
+   - After 15 min inactivity, server sleeps
+   - First request after sleep takes 10-30 seconds
+   - *Workaround*: Could add a cron job to ping `/health` every 10 min
 
 2. **No Authentication**
-   - Admin dashboard is publicly accessible
-   - Production would need auth (NextAuth, Clerk, etc.)
+   - Anyone can access `/admin` dashboard
+   - Anyone can submit reviews (no user accounts)
+   - *Why I skipped it*: Not required for the assessment; would add NextAuth.js in production
 
-3. **Single LLM Provider**
-   - Dependent on Cerebras API availability
-   - No fallback to OpenAI/Anthropic
+3. **Single Point of Failure (Cerebras)**
+   - If Cerebras API is down, all new submissions get `ai_status="failed"`
+   - No automatic fallback to another LLM provider
+   - *Mitigation in code*: Fallback response ensures user still gets acknowledgment
 
-4. **No Rate Limiting**
-   - Could be abused with spam submissions
-   - Would add Redis-based rate limiting in production
+4. **Actions Array Not Validated**
+   - LLM returns `recommended_actions` as array, I just cap it at 8 items
+   - No check for action quality/relevance
+   - *Why*: Trusting LLM output for this use case; validation would require another LLM call
+
+5. **No Rate Limiting**
+   - Someone could spam `/api/submit-review` and burn through Cerebras quota
+   - *Would add*: `slowapi` or Redis-based rate limiting in production
 
 ---
 
