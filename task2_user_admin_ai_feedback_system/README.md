@@ -2,6 +2,12 @@
 
 A production-ready, two-dashboard web application that collects customer feedback and generates AI-powered responses, summaries, and actionable recommendations using server-side LLM integration.
 
+### 🔗 Live Dashboards
+| Dashboard | URL |
+|-----------|-----|
+| **User Dashboard** | [https://fynd-ai-intern-home-assessment-2-0.vercel.app/] |
+| **Admin Dashboard** | [https://fynd-ai-intern-home-assessment-2-0.vercel.app/admin] |
+
 ---
 
 ## 📋 Task Description
