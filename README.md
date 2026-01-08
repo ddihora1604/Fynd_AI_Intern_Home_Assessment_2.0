@@ -30,7 +30,7 @@ This repository contains solutions for two AI/LLM-focused tasks:
 
 ## 🎯 Overall Approach
 
-### Task 1 Approach: Systematic Prompt Engineering
+### Task 1 Approach: Rating Prediction via Prompting
 
 | Phase | Action | Outcome |
 |-------|--------|---------|
@@ -41,7 +41,7 @@ This repository contains solutions for two AI/LLM-focused tasks:
 
 **Key Insight**: All three strategies (zero-shot, few-shot, chain-of-thought) achieved similar accuracy (~64%), suggesting the 8B model's capability - not prompt design - is the primary bottleneck.
 
-### Task 2 Approach: Production-Grade System Design
+### Task 2 Approach: Two-Dashboard AI Feedback System (Web-Based)
 
 | Phase | Action | Outcome |
 |-------|--------|---------|
