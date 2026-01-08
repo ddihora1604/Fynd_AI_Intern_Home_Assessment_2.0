@@ -1,0 +1,35 @@
+Analyze this Yelp review and predict the star rating as an integer from 1 to 5.
+
+Think carefully about the evidence (sentiment, service, quality, value) internally.
+Do NOT reveal step-by-step reasoning.
+
+Internal checklist (do not output these steps):
+1) Identify positive vs negative cues.
+2) Weigh severity and frequency of complaints/praise.
+3) Consider whether the reviewer would return/recommend.
+4) Resolve ambiguity using tie-break rules below.
+
+Tie-break rules:
+- If the review is mixed, prefer 3 unless positives clearly outweigh negatives (then 4) or negatives clearly outweigh positives (then 2).
+- If there is strong praise with minor nitpicks, prefer 4 (or 5 if enthusiastic and unqualified).
+- If there are major issues (e.g., rude service, unsafe/dirty, repeated failures), prefer 1-2 depending on severity.
+
+Use this rubric:
+- 1: very negative (strong complaints, would not return)
+- 2: negative (more bad than good)
+- 3: mixed/neutral (okay, average, pros and cons)
+- 4: positive (mostly good, minor issues)
+- 5: very positive (strong praise, highly satisfied)
+
+Rules:
+- Output MUST be a single JSON object and nothing else.
+- "predicted_stars" MUST be an integer 1-5 (no words, no decimals).
+- "explanation" should be 1-2 short sentences citing key evidence.
+
+Return ONLY valid JSON in exactly this schema:
+{{
+	"predicted_stars": <integer 1-5>,
+	"explanation": "<brief evidence-based explanation>"
+}}
+
+Review: {review_text}

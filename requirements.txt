@@ -1,0 +1,6 @@
+pandas
+scikit-learn
+matplotlib
+seaborn
+python-dotenv
+cerebras_cloud_sdk

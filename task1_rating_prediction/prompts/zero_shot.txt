@@ -1,0 +1,21 @@
+You are predicting the Yelp review star rating as an integer from 1 to 5.
+
+Use this rubric:
+- 1: very negative (strong complaints, would not return)
+- 2: negative (more bad than good)
+- 3: mixed/neutral (okay, average, pros and cons)
+- 4: positive (mostly good, minor issues)
+- 5: very positive (strong praise, highly satisfied)
+
+Rules:
+- Output MUST be a single JSON object and nothing else.
+- "predicted_stars" MUST be an integer 1-5 (no words, no decimals).
+- "explanation" should be 1-2 short sentences citing key evidence.
+
+Return ONLY valid JSON in exactly this schema:
+{{
+	"predicted_stars": <integer 1-5>,
+	"explanation": "<brief evidence-based explanation>"
+}}
+
+Review: {review_text}
