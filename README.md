@@ -13,11 +13,18 @@ This repository contains solutions for two AI/LLM-focused tasks:
 
 ### 🔗 Quick Links
 
+#### 🌐 Live Demos (Task 2)
+| Dashboard | Description | Link |
+|-----------|-------------|------|
+| 🧑‍💻 **User Dashboard** | Submit ratings & reviews, get AI responses | [![Live Demo](https://img.shields.io/badge/▶_User_Dashboard-4f46e5?style=for-the-badge&logo=vercel&logoColor=white)](https://fynd-ai-intern-home-assessment-2-0.vercel.app/) |
+| 👨‍💼 **Admin Dashboard** | View submissions, analytics & AI summaries | [![Live Demo](https://img.shields.io/badge/▶_Admin_Dashboard-059669?style=for-the-badge&logo=vercel&logoColor=white)](https://fynd-ai-intern-home-assessment-2-0.vercel.app/admin) |
+
+#### 📂 Source Code
 | Resource | Link |
 |----------|------|
-| **Task 2 - User Dashboard** | [Live Demo](https://fynd-ai-intern-home-assessment-2-0.vercel.app/) |
-| **Task 2 - Admin Dashboard** | [Live Demo](https://fynd-ai-intern-home-assessment-2-0.vercel.app/admin) |
-| **Task 1 - Notebook** | [task1_notebook.ipynb](task1_rating_prediction/task1_notebook.ipynb) |
+| 📓 **Task 1 - Notebook** | [task1_notebook.ipynb](task1_rating_prediction/task1_notebook.ipynb) |
+| 📁 **Task 1 - Full Directory** | [task1_rating_prediction/](task1_rating_prediction/) |
+| 📁 **Task 2 - Full Directory** | [task2_user_admin_ai_feedback_system/](task2_user_admin_ai_feedback_system/) |
 
 ---
 
@@ -32,7 +39,7 @@ This repository contains solutions for two AI/LLM-focused tasks:
 | **Optimization** | Designed rating rubric + tie-break rules | Reduced ambiguity in middle ratings |
 | **Evaluation** | Measured accuracy, validity, consistency | Data-driven strategy selection |
 
-**Key Insight**: All three strategies (zero-shot, few-shot, chain-of-thought) achieved similar accuracy (~64%), suggesting the 8B model's capability—not prompt design—is the primary bottleneck.
+**Key Insight**: All three strategies (zero-shot, few-shot, chain-of-thought) achieved similar accuracy (~64%), suggesting the 8B model's capability - not prompt design - is the primary bottleneck.
 
 ### Task 2 Approach: Production-Grade System Design
 
