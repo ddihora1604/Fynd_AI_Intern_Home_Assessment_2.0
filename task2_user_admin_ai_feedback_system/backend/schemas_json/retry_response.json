@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RetryResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "submission_id": { "type": "string" },
+    "ai_status": { "type": "string", "enum": ["success", "failed"] },
+    "ai_summary": { "type": "string" },
+    "ai_actions": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["submission_id", "ai_status", "ai_summary", "ai_actions"]
+}

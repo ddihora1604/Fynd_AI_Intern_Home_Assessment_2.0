@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: task2-backend
+    env: python
+    rootDir: task2_user_admin_ai_feedback_system/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT

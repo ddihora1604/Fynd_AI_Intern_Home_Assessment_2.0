@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SubmitReviewResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "submission_id": { "type": "string" },
+    "status": { "type": "string", "enum": ["accepted"] },
+    "ai_response": { "type": "string" }
+  },
+  "required": ["submission_id", "status", "ai_response"]
+}
